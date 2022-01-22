@@ -37,11 +37,35 @@ def main():
     gs = chess_engine.GameState()
     load_images()
     running = True
+    # The sq_selected variable is for keeping track of last clicked square => tuple(row, col).
+    sq_selected = ()
+    # The player_clicks is for keeping tracks of clicks (two tuples => [(6, 4), (4, 4)])
+    player_clicks = []
 
     while running:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
+            elif event.type == pg.MOUSEBUTTONDOWN:
+                location = pg.mouse.get_pos()
+                col = location[0] // SQ_SIZE
+                row = location[1] // SQ_SIZE
+                if sq_selected == (row, col): # the user clickedd the same square twice
+                    sq_selected = ()
+                    player_clicks = []
+                else:
+                    sq_selected = (row, col)
+                    # We append for both and the second clicks
+                    player_clicks.append(sq_selected)
+                    # After the second click
+                    if len(player_clicks) == 2:
+                        move = chess_engine.Move(player_clicks[0], player_clicks[1], gs.board)
+                        print(move.get_chess_notation())
+                        gs.make_move(move)
+                        # Resetting user clicks
+                        sq_selected = ()
+                        player_clicks = []
+
         draw_game_state(screen, gs)
         clock.tick(FPS)
         pg.display.flip()
