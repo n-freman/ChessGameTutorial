@@ -9,14 +9,19 @@ WIDTH = HEIGHT = 650
 DIMENSION = 8
 SQ_SIZE = HEIGHT // DIMENSION
 FPS = 15
+square_piece_size_diff = 8
 IMAGES = {}
+
+
 """
 Initialize a global dictionary of images. This will be called exactly once in the main.
 """
 def load_images():
     pieces = ['wR', 'wN', 'wB', 'wQ', 'wK', 'wP', 'bR', 'bN', 'bB', 'bQ', 'bK', 'bP']
     for piece in pieces:
-        IMAGES[piece] = pg.transform.scale(pg.image.load(f"Assets/{piece}.png"), (SQ_SIZE, SQ_SIZE))
+        IMAGES[piece] = pg.transform.scale(
+            pg.image.load(f"Assets/{piece}.png"), 
+            (SQ_SIZE-square_piece_size_diff, SQ_SIZE-square_piece_size_diff))
     # Note: we can access an image by saying "IMAGES['wP']"
 
 
@@ -36,8 +41,56 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
+        draw_game_state(screen, gs)
         clock.tick(FPS)
-        pg.diplay.flip()
+        pg.display.flip()
+
+
+"""
+Responsible for all the graphics within a current game state.
+"""
+def draw_game_state(screen, gs):
+    # Draws squares on the board
+    draw_board(screen) 
+    # Space for adding piece highlighting func
+    # Or move suggestion
+    # 
+    # 
+    # Draw pieces on top the of those squares
+    draw_pieces(screen, gs.board)
+
+
+"""
+Draw the squares on the board. The top left square is always light.
+"""
+def draw_board(screen):
+    colors = [pg.Color(238, 238, 213), pg.Color(125, 148, 93)]
+    for row in range(DIMENSION):
+        for column in range(DIMENSION):
+            # ROW + COLUMN of light squares is always even
+            # And for dark squares it is odd. That's how I get color of the square
+            color = colors[(row+column) % 2]
+            pg.draw.rect(
+                screen, color, pg.Rect(column*SQ_SIZE, row*SQ_SIZE, SQ_SIZE, SQ_SIZE)
+                )
+
+
+"""
+Draw the pieces on the board using the current GameState.board
+"""
+def draw_pieces(screen, board):
+    for row in range(DIMENSION):
+        for column in range(DIMENSION):
+            piece = board[row][column]
+            if piece != '--':
+                # We aded half of square_piece_size_diff to the piece position to make it on the centre of the square
+                screen.blit(
+                    IMAGES[piece], pg.Rect(
+                        column*SQ_SIZE+square_piece_size_diff/2, 
+                        row*SQ_SIZE+square_piece_size_diff/2, 
+                        SQ_SIZE, 
+                        SQ_SIZE)
+                    )
 
 
 if __name__ == "__main__":
