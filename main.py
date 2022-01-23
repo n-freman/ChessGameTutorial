@@ -46,6 +46,7 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
+            # Mouse press handler
             elif event.type == pg.MOUSEBUTTONDOWN:
                 location = pg.mouse.get_pos()
                 col = location[0] // SQ_SIZE
@@ -65,7 +66,10 @@ def main():
                         # Resetting user clicks
                         sq_selected = ()
                         player_clicks = []
-
+            # Keyboard handler
+            elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_c:
+                    gs.undo_move()
         draw_game_state(screen, gs)
         clock.tick(FPS)
         pg.display.flip()
