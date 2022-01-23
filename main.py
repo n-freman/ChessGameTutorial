@@ -31,10 +31,13 @@ This main driver for our code. This will handle user input and updating the grap
 """
 def main():
     pg.init()
-    screen = pg.display.set_mode((WIDTH, HEIGHT))
+    screen = pg.display.set_mode((WIDTH-2, HEIGHT-2))
     clock = pg.time.Clock()
     screen.fill(pg.Color('white'))
     gs = chess_engine.GameState()
+    valid_moves = gs.get_valid_moves()
+    # move_mode is a flag variabla for when a move is made.
+    move_made = False
     load_images()
     running = True
     # The sq_selected variable is for keeping track of last clicked square => tuple(row, col).
@@ -62,7 +65,9 @@ def main():
                     if len(player_clicks) == 2:
                         move = chess_engine.Move(player_clicks[0], player_clicks[1], gs.board)
                         print(move.get_chess_notation())
-                        gs.make_move(move)
+                        if move in valid_moves:
+                            gs.make_move(move)
+                            move_made = True
                         # Resetting user clicks
                         sq_selected = ()
                         player_clicks = []
@@ -70,6 +75,12 @@ def main():
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_c:
                     gs.undo_move()
+                    move_made = True
+
+        if move_made:
+            valid_moves = gs.get_valid_moves()
+            move_made = False
+
         draw_game_state(screen, gs)
         clock.tick(FPS)
         pg.display.flip()

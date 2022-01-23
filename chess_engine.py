@@ -45,6 +45,43 @@ class GameState:
         # Swap players back
         self.white_to_move = not self.white_to_move
         print(f'Undo the move: {last_move.get_chess_notation()}')
+    
+    """
+    All moves considering checks
+    """
+    def get_valid_moves(self):
+        return self.get_all_possible_moves()
+
+    """
+    All moves without considering checks
+    """
+    def get_all_possible_moves(self):
+        moves = [Move((6, 4), (4, 4), self.board)]
+        # Move((6, 4), (4, 4), self.board)
+        for row in range(len(self.board)):
+            for col in range(len(self.board[row])):
+                turn = self.board[row][col][0]
+                if (turn == 'w' and self.white_to_move) and (turn=='b' and not self.white_to_move):
+                    piece = self.board[row][col][1]
+                    if piece == 'P':
+                        self.get_pawn_moves(row, col)
+                    elif piece == 'R':
+                        self.get_rook_moves(row,col)
+                    elif piece == 'N':
+                        self.get_knight_moves(row, col)
+        return moves
+    
+    """
+    Get all the pawn moves for the pawn located at row, col and add these moves to the list.
+    """
+    def get_pawn_moves(self, row, col, moves):
+        pass
+    
+    """
+    Get all the rook moves for the rook located at row, col and add these moves to the list.
+    """
+    def get_rook_moves(self, row, col, moves):
+        pass
         
 
 class Move:
@@ -79,6 +116,16 @@ class Move:
         self.end_col = end_sq[1]
         self.piece_moved = board[self.start_row][self.start_col]
         self.piece_captured = board[self.end_row][self.end_col]
+        self.move_id = self.start_row * 1000 + self.start_col * 100 + self.end_row * 10 + self.end_col
+        print(self.move_id)
+    
+    """
+    Overwriting the equals method
+    """
+    def __eq__(self, other):
+        if isinstance(other, Move):
+            return self.move_id == other.move_id
+        return False
     
     def get_chess_notation(self):
         # TODO make a real chess notation
