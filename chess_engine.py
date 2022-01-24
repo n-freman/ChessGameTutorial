@@ -29,22 +29,22 @@ class GameState:
         }
         self.white_to_move = True
         self.move_log = []
-    
-    """
-    Takes a Move as a parameter and executes it 
-    (this will not work for castling, pawn promotion and en-passant).
-    """
+      
     def make_move(self, move):
+        """
+        Takes a Move as a parameter and executes it 
+        (this will not work for castling, pawn promotion and en-passant).
+        """
         self.board[move.start_row][move.start_col] = "--"
         self.board[move.end_row][move.end_col] = move.piece_moved
         self.move_log.append(move)
         # Swap players
         self.white_to_move = not self.white_to_move
     
-    """
-    Undo the last move made.
-    """
     def undo_move(self):
+        """
+        Undo the last move made.
+        """
         if len(self.move_log) == 0:
             return
         last_move = self.move_log.pop()
@@ -54,10 +54,10 @@ class GameState:
         self.white_to_move = not self.white_to_move
         print(f'Undo the move: {last_move.get_chess_notation()}')
     
-    """
-    All moves considering checks
-    """
     def get_valid_moves(self):
+        """
+        All moves considering checks
+        """
         return self.get_all_possible_moves()
 
     """
@@ -111,7 +111,7 @@ class GameState:
             color = 'b'
         else:
             color = 'w'
-        while col+1 <=7:
+        while col + 1 <=7:
             col += 1
             if self.board[row][col] == '--':
                 moves.append(Move((init_row, init_col), (row, col), self.board))
@@ -119,7 +119,7 @@ class GameState:
                 moves.append(Move((init_row, init_col), (row, col), self.board))
                 break
         col = init_col
-        while col-1 >=0:
+        while col - 1 >=0:
             col -= 1
             if self.board[row][col] == '--':
                 moves.append(Move((init_row, init_col), (row, col), self.board))
@@ -127,7 +127,7 @@ class GameState:
                 moves.append(Move((init_row, init_col), (row, col), self.board))
                 break
         col = init_col
-        while row+1 <= 7:
+        while row + 1 <= 7:
             row += 1
             if self.board[row][col] == '--':
                 moves.append(Move((init_row, init_col), (row, col), self.board))
@@ -135,7 +135,7 @@ class GameState:
                 moves.append(Move((init_row, init_col), (row, col), self.board))
                 break
         row = init_row
-        while row-1 >= 0:
+        while row - 1 >= 0:
             row -= 1
             if self.board[row][col] == '--':
                 moves.append(Move((init_row, init_col), (row, col), self.board))
@@ -148,33 +148,33 @@ class GameState:
             color = 'b'
         else:
             color = 'w'
-        if row+2 <= 7:
-            if col+1 <= 7:
+        if row + 2 <= 7:
+            if col + 1 <= 7:
                 if self.board[row+2][col+1] == '--' or self.board[row+2][col+1][0] == color:
                     moves.append(Move((row, col), (row+2, col+1), self.board))
-            if col-1 >= 0:
+            if col - 1 >= 0:
                 if self.board[row+2][col-1] == '--' or self.board[row+2][col-1][0] == color:
                     moves.append(Move((row, col), (row+2, col-1), self.board))
-        if row-2 >= 0:
-            if col+1 <= 7:
+        if row - 2 >= 0:
+            if col + 1 <= 7:
                 if self.board[row-2][col+1] == '--' or self.board[row-2][col+1][0] == color:
                     moves.append(Move((row, col), (row-2, col+1), self.board))
-            if col-1 >= 0:
+            if col - 1 >= 0:
                 if self.board[row-2][col-1] == '--' or self.board[row-2][col-1][0] == color:
                     moves.append(Move((row, col), (row-2, col-1), self.board))
         
-        if row+1 <= 7:
-            if col+2 <= 7:
+        if row + 1 <= 7:
+            if col + 2 <= 7:
                 if self.board[row+1][col+2] == '--' or self.board[row+1][col+2][0] == color:
                     moves.append(Move((row, col), (row+1, col+2), self.board))
-            if col-2 >= 0:
+            if col - 2 >= 0:
                 if self.board[row+1][col-2] == '--' or self.board[row+1][col-2][0] == color:
                     moves.append(Move((row, col), (row+1, col-2), self.board))
-        if row-1 >= 0:
-            if col+2 <= 7:
+        if row - 1 >= 0:
+            if col + 2 <= 7:
                 if self.board[row-1][col+2] == '--' or self.board[row-1][col+2][0] == color:
                     moves.append(Move((row, col), (row-1, col+2), self.board))
-            if col-2 >= 0:
+            if col - 2 >= 0:
                 if self.board[row-1][col-2] == '--' or self.board[row-1][col-2][0] == color:
                     moves.append(Move((row, col), (row-1, col-2), self.board))
     
@@ -195,7 +195,7 @@ class GameState:
                 break
         row = init_row
         col = init_col
-        while (row+1 <= 7) and  (col-1 >= 0):
+        while (row + 1 <= 7) and  (col - 1 >= 0):
             row += 1
             col -= 1
             if self.board[row][col] == '--':
@@ -205,7 +205,7 @@ class GameState:
                 break
         row = init_row
         col = init_col
-        while (row-1 >= 0) and  (col+1 <= 7):
+        while (row - 1 >= 0) and  (col + 1 <= 7):
             row -= 1
             col += 1
             if self.board[row][col] == '--':
@@ -215,7 +215,7 @@ class GameState:
                 break
         row = init_row
         col = init_col
-        while (row-1 >= 0) and  (col-1 >= 0):
+        while (row - 1 >= 0) and  (col - 1 >= 0):
             row -= 1
             col -= 1
             if self.board[row][col] == '--':
@@ -233,28 +233,28 @@ class GameState:
             color = 'b'
         else:
             color = 'w'
-        if row+1 <= 7:
+        if row + 1 <= 7:
             if self.board[row+1][col] == '--' or self.board[row+1][col][0] == color:
                 moves.append(Move((row, col), (row+1, col), self.board))
-            if col+1 <= 7:
+            if col + 1 <= 7:
                 if self.board[row+1][col+1] == '--' or self.board[row+1][col+1][0] == color:
                     moves.append(Move((row, col), (row+1, col+1), self.board))
-            if col-1 >= 0:
+            if col - 1 >= 0:
                 if self.board[row+1][col-1] == '--' or self.board[row+1][col-1][0] == color:
                     moves.append(Move((row, col), (row+1, col-1), self.board))
-        if row-1 >= 0:
+        if row - 1 >= 0:
             if self.board[row-1][col] == '--' or self.board[row-1][col][0] == color:
                 moves.append(Move((row, col), (row-1, col), self.board))
-            if col+1 <= 7:
+            if col + 1 <= 7:
                 if self.board[row-1][col+1] == '--' or self.board[row-1][col+1][0] == color:
                     moves.append(Move((row, col), (row-1, col+1), self.board))
-            if col-1 >= 0:
+            if col - 1 >= 0:
                 if self.board[row-1][col-1] == '--' or self.board[row-1][col-1][0] == color:
                     moves.append(Move((row, col), (row-1, col-1), self.board))
-        if col+1 <= 7:
+        if col + 1 <= 7:
             if self.board[row][col+1] == '--' or self.board[row][col+1][0] == color:
                         moves.append(Move((row, col), (row, col+1), self.board))
-        if col-1 >= 0:
+        if col - 1 >= 0:
             if self.board[row][col-1] == '--' or self.board[row][col-1][0] == color:
                 moves.append(Move((row, col), (row, col-1), self.board))
         
