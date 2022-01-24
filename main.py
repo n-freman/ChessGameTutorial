@@ -71,9 +71,11 @@ def main():
                         if move in valid_moves:
                             gs.make_move(move)
                             move_made = True
-                        # Resetting user clicks
-                        sq_selected = ()
-                        player_clicks = []
+                            # Resetting user clicks
+                            sq_selected = ()
+                            player_clicks = []
+                        else:
+                            player_clicks = [sq_selected]
             # Keyboard handler
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_c:
@@ -111,7 +113,7 @@ def draw_board(screen):
     for row in range(DIMENSION):
         for column in range(DIMENSION):
             # ROW + COLUMN of light squares is always even
-            # And for dark squares it is odd. That's how I get color of the square
+            # And for dark squares it is odd. That's how to get color of the square
             color = colors[(row+column) % 2]
             pg.draw.rect(
                 screen, color, pg.Rect(column*SQ_SIZE, row*SQ_SIZE, SQ_SIZE, SQ_SIZE)
