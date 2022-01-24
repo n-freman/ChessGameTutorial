@@ -1,8 +1,8 @@
-"""
-This class is responsible for storing all the information about the current state of a chess game. It will also be
-responsible for determining the valid moves at the current state. It will also keep a move log. 
-"""
 class GameState:
+    """
+    This class is responsible for storing all the information about the current state of a chess game. It will also be
+    responsible for determining the valid moves at the current state. It will also keep a move log.
+    """
 
     def __init__(self):
         # The board is 8x8 2d list, each element of a list has 2 characters.
@@ -17,7 +17,7 @@ class GameState:
             ['--', '--', '--', '--', '--', '--', '--', '--'],
             ['--', '--', '--', '--', '--', '--', '--', '--'],
             ['wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP'],
-            ['wR', 'wN', 'wQ', 'wQ', 'wK', 'wQ', 'wN', 'wR']
+            ['wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR']
         ]
         self.move_functions = {
             'P': self.get_pawn_moves,
@@ -29,6 +29,10 @@ class GameState:
         }
         self.white_to_move = True
         self.move_log = []
+        self.white_king_location = (7, 4)
+        self.black_king_location = (0, 4)
+        self.check_mate = False
+        self.stale_mate = False
       
     def make_move(self, move):
         """
@@ -40,6 +44,10 @@ class GameState:
         self.move_log.append(move)
         # Swap players
         self.white_to_move = not self.white_to_move
+        if move.piece_moved == 'wk':
+            self.white_king_location = (move.end_row, move.end_col)
+        elif move.piece_moved == 'bK':
+            self.black_king_location = (move.end_row, move.end_col)
     
     def undo_move(self):
         """
@@ -53,17 +61,64 @@ class GameState:
         # Swap players back
         self.white_to_move = not self.white_to_move
         print(f'Undo the move: {last_move.get_chess_notation()}')
+        if last_move.piece_moved == 'wk':
+            self.white_king_location = (last_move.start_row, last_move.start_col)
+        elif last_move.piece_moved == 'bK':
+            self.black_king_location = (last_move.start_row, last_move.start_col)
     
     def get_valid_moves(self):
         """
         All moves considering checks
         """
-        return self.get_all_possible_moves()
+        moves = self.get_all_possible_moves()
+        for i in range(len(moves)-1, -1, -1):
+            self.make_move(moves[i])
+            self.white_to_move = not self.white_to_move
+            if self.in_check():
+                moves.remove(moves[i])
+            self.white_to_move = not self.white_to_move
+            self.undo_move()
+        if len(moves) == 0:
+            if self.in_check():
+                self.check_mate = True
+            else:
+                self.stale_mate = True
+        else:
+            self.check_mate = False
+            self.stale_mate = False
+        return moves
 
-    """
-    All moves without considering checks
-    """
+    def in_check(self):
+        """
+        Determine if the current player is in check
+        """
+        if self.white_to_move:
+            return self.square_under_attack(
+                self.white_king_location[0],
+                self.white_king_location[1]
+            )
+        else:
+            return self.square_under_attack(
+                self.black_king_location[0],
+                self.black_king_location[1]
+            )
+
+    def square_under_attack(self, row, col):
+        """
+        Determine if the enemy can attack the square row, col
+        """
+        self.white_to_move = not self.white_to_move
+        opp_moves = self.get_all_possible_moves()
+        self.white_to_move = not self.white_to_move
+        for move in opp_moves:
+            if move.end_row == row and move.end_col == col:
+                return True
+        return False
+
     def get_all_possible_moves(self):
+        """
+        All moves without considering checks.
+        """
         moves = []
         # Move((6, 4), (4, 4), self.board)
         for row in range(len(self.board)):
@@ -81,8 +136,9 @@ class GameState:
         if self.white_to_move:
             if self.board[row-1][col] == '--':
                 moves.append(Move((row, col), (row-1, col), self.board))
-                if self.board[row-2][col] == '--':
-                    moves.append(Move((row, col), (row-2, col), self.board))
+                if row == 6:
+                    if self.board[row-2][col] == '--':
+                        moves.append(Move((row, col), (row-2, col), self.board))
             if col - 1 >= 0:
                 if self.board[row-1][col-1][0] == 'b':
                     moves.append(Move((row, col), (row-1, col-1), self.board))
@@ -92,8 +148,9 @@ class GameState:
         else:
             if self.board[row+1][col] == '--':
                 moves.append(Move((row, col), (row+1, col), self.board))
-                if self.board[row+2][col] == '--':
-                    moves.append(Move((row, col), (row+2, col), self.board))
+                if row == 1:
+                    if self.board[row+2][col] == '--':
+                        moves.append(Move((row, col), (row+2, col), self.board))
             if col - 1 >= 0:
                 if self.board[row+1][col-1][0] == 'w':
                     moves.append(Move((row, col), (row+1, col-1), self.board))
@@ -218,7 +275,6 @@ class Move:
     }
     cols_to_files = {v: k for k, v in files_to_cols.items()}
 
-
     def __init__(self, start_sq, end_sq, board):
         self.start_row = start_sq[0]
         self.start_col = start_sq[1]
@@ -227,11 +283,11 @@ class Move:
         self.piece_moved = board[self.start_row][self.start_col]
         self.piece_captured = board[self.end_row][self.end_col]
         self.move_id = self.start_row * 1000 + self.start_col * 100 + self.end_row * 10 + self.end_col
-    
-    """
-    Overwriting the equals method
-    """
+
     def __eq__(self, other):
+        """
+        Overwriting the equals method
+        """
         if isinstance(other, Move):
             return self.move_id == other.move_id
         return False

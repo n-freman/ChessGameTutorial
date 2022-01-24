@@ -5,13 +5,43 @@ Hope to finish it in two weeks.<br>
 22.01.22 13:42 Finished 2/16 tutorial.<br>
 23.01.22 _9:44 Finished 3/16 tutorial.<br>
 23.01.22 18:35 Finished 4/16 tutorial.<br>
-24.01.22 11:52 Finished 5/16 tutorial.
+24.01.22 11:52 Finished 5/16 tutorial.<br>
+24.01.22 14:22 Finished 6/16 tutorial.
+
+---
+
 ## About my own changes to the project
 I am also going to add few lines to resize images of pieces.<br>
 I saw that in tutorial author uses pictures of prepared size.<br>
-Added some changes to the variable names, because author used not pythonic naming convention (he actually says that he is the JAVA guy).<br>
+Added some changes to the variable names, because author used not pythonic naming convention<br>
+(he actually says that he is the JAVA guy).<br>
 Also added my own pieces and colors for game board.<br>
 Added functionality for making pieces smaller than the squares.<br>
 Rewrote some functions ('undo_move', get_piece_move for each piece) on my own way.
+
+---
+
 ## Notes
 Found out that not only the pieces are redrawed, but the whole gameboard is.
+
+---
+
+## HOW TO RUN THE GAME
+First you need to install any version of python3 from python.org<br>
+Second you should install pip.<br>
+If you are on Windows it comes with python3.<br>
+if you are on Linux you just run the next command:
+```
+sudo apt update
+sudo apt install pip
+```
+And then on both Windows and Linux you need to install pygame:
+```
+pip install pygame
+```
+Then just get the copy of the project and run it:
+```
+git clone https://github.com/tiberius-kirk/ChessGameTutorial.git
+cd ChessGameTutorial
+python main.py
+```

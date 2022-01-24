@@ -14,10 +14,10 @@ square_piece_size_diff = 8
 IMAGES = {}
 
 
-"""
-Initialize a global dictionary of images. This will be called exactly once in the main.
-"""
 def load_images():
+    """
+    Initialize a global dictionary of images. This will be called exactly once in the main.
+    """
     pieces = ['wR', 'wN', 'wB', 'wQ', 'wK', 'wP', 'bR', 'bN', 'bB', 'bQ', 'bK', 'bP']
     for piece in pieces:
         IMAGES[piece] = pg.transform.scale(
@@ -26,10 +26,10 @@ def load_images():
     # Note: we can access an image by saying "IMAGES['wP']"
 
 
-"""
-This main driver for our code. This will handle user input and updating the graphics
-"""
 def main():
+    """
+    This main driver for our code. This will handle user input and updating the graphics
+    """
     pg.init()
     screen = pg.display.set_mode((WIDTH-2, HEIGHT-2))
     clock = pg.time.Clock()
@@ -91,11 +91,11 @@ def main():
         pg.display.flip()
 
 
-"""
-Responsible for all the graphics within a current game state.
-"""
 def draw_game_state(screen, gs):
-    # Draws squares on the board
+    """
+    Responsible for all the graphics within a current game state.
+    """
+    # Draw squares on the board
     draw_board(screen) 
     # Space for adding piece highlighting func
     # Or move suggestion
@@ -105,10 +105,10 @@ def draw_game_state(screen, gs):
     draw_pieces(screen, gs.board)
 
 
-"""
-Draw the squares on the board. The top left square is always light.
-"""
 def draw_board(screen):
+    """
+    Draw the squares on the board. The top left square is always light.
+    """
     colors = [pg.Color(238, 238, 213), pg.Color(125, 148, 93)]
     for row in range(DIMENSION):
         for column in range(DIMENSION):
@@ -120,10 +120,10 @@ def draw_board(screen):
                 )
 
 
-"""
-Draw the pieces on the board using the current GameState.board
-"""
 def draw_pieces(screen, board):
+    """
+    Draw the pieces on the board using the current GameState.board
+    """
     for row in range(DIMENSION):
         for column in range(DIMENSION):
             piece = board[row][column]
