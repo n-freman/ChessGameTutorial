@@ -17,7 +17,7 @@ class GameState:
             ['--', '--', '--', '--', '--', '--', '--', '--'],
             ['--', '--', '--', '--', '--', '--', '--', '--'],
             ['wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP', 'wP'],
-            ['wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR']
+            ['wR', 'wN', 'wQ', 'wQ', 'wK', 'wQ', 'wN', 'wR']
         ]
         self.move_functions = {
             'P': self.get_pawn_moves,
@@ -195,7 +195,7 @@ class GameState:
                 break
         row = init_row
         col = init_col
-        while (row+1 <= 7) and  (col-1 <= 7):
+        while (row+1 <= 7) and  (col-1 >= 0):
             row += 1
             col -= 1
             if self.board[row][col] == '--':
@@ -205,7 +205,7 @@ class GameState:
                 break
         row = init_row
         col = init_col
-        while (row-1 <= 7) and  (col+1 <= 7):
+        while (row-1 >= 0) and  (col+1 <= 7):
             row -= 1
             col += 1
             if self.board[row][col] == '--':
@@ -215,7 +215,7 @@ class GameState:
                 break
         row = init_row
         col = init_col
-        while (row-1 <= 7) and  (col-1 <= 7):
+        while (row-1 >= 0) and  (col-1 >= 0):
             row -= 1
             col -= 1
             if self.board[row][col] == '--':
