@@ -31,7 +31,7 @@ This main driver for our code. This will handle user input and updating the grap
 """
 def main():
     pg.init()
-    screen = pg.display.set_mode((WIDTH, HEIGHT))
+    screen = pg.display.set_mode((WIDTH-2, HEIGHT-2))
     clock = pg.time.Clock()
     screen.fill(pg.Color('white'))
     gs = chess_engine.GameState()
@@ -59,7 +59,10 @@ def main():
                     player_clicks.append(sq_selected)
                     # After the second click
                     if len(player_clicks) == 2:
-                        move = chess_engine.Move(player_clicks[0], player_clicks[1], gs.board)
+                        move = chess_engine.Move(
+                            player_clicks[0], 
+                            player_clicks[1], 
+                            gs.board)
                         print(move.get_chess_notation())
                         gs.make_move(move)
                         # Resetting user clicks
@@ -109,10 +112,11 @@ def draw_pieces(screen, board):
             piece = board[row][column]
             if piece != '--':
                 # We aded half of square_piece_size_diff to the piece position to make it on the centre of the square
+                half_diff = square_piece_size_diff/2
                 screen.blit(
                     IMAGES[piece], pg.Rect(
-                        column*SQ_SIZE+square_piece_size_diff/2, 
-                        row*SQ_SIZE+square_piece_size_diff/2, 
+                        column*SQ_SIZE+half_diff, 
+                        row*SQ_SIZE+half_diff, 
                         SQ_SIZE, 
                         SQ_SIZE)
                     )
