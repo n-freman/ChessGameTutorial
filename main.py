@@ -35,6 +35,9 @@ def main():
     clock = pg.time.Clock()
     screen.fill(pg.Color('white'))
     gs = chess_engine.GameState()
+    valid_moves = gs.get_valid_moves()
+    # move_mode is a flag variabla for when a move is made.
+    move_made = False
     load_images()
     running = True
     # The sq_selected variable is for keeping track of last clicked square => tuple(row, col).
@@ -46,6 +49,7 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
+            # Mouse press handler
             elif event.type == pg.MOUSEBUTTONDOWN:
                 location = pg.mouse.get_pos()
                 col = location[0] // SQ_SIZE
@@ -64,10 +68,21 @@ def main():
                             player_clicks[1], 
                             gs.board)
                         print(move.get_chess_notation())
-                        gs.make_move(move)
+                        if move in valid_moves:
+                            gs.make_move(move)
+                            move_made = True
                         # Resetting user clicks
                         sq_selected = ()
                         player_clicks = []
+            # Keyboard handler
+            elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_c:
+                    gs.undo_move()
+                    move_made = True
+
+        if move_made:
+            valid_moves = gs.get_valid_moves()
+            move_made = False
 
         draw_game_state(screen, gs)
         clock.tick(FPS)
