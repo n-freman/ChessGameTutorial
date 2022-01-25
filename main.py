@@ -72,13 +72,14 @@ def main():
                             player_clicks[1], 
                             gs.board)
                         print(move.get_chess_notation())
-                        if move in valid_moves:
-                            gs.make_move(move)
-                            move_made = True
-                            # Resetting user clicks
-                            sq_selected = ()
-                            player_clicks = []
-                        else:
+                        for i in range(len(valid_moves)):
+                            if move == valid_moves[i]:
+                                gs.make_move(valid_moves[i])
+                                move_made = True
+                                # Resetting user clicks
+                                sq_selected = ()
+                                player_clicks = []
+                        if not move_made:
                             player_clicks = [sq_selected]
             # Keyboard handler
             elif event.type == pg.KEYDOWN:

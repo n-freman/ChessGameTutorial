@@ -7,7 +7,8 @@ Hope to finish it in two weeks.<br>
 23.01.22 18:35 Finished 4/16 tutorial.<br>
 24.01.22 11:52 Finished 5/16 tutorial.<br>
 24.01.22 14:22 Finished 6/16 tutorial.<br>
-25.01.22 10:18 Finished 7/16 tutorial.
+25.01.22 10:18 Finished 7/16 tutorial.<br>
+25.01.22 12:00 Finished 8/16 tutorial.
 
 ---
 

@@ -39,6 +39,7 @@ class GameState:
         self.checks = []
         self.check_mate = False
         self.stale_mate = False
+        self.en_passant_possible = ()
       
     def make_move(self, move):
         """
@@ -54,6 +55,18 @@ class GameState:
             self.white_king_location = (move.end_row, move.end_col)
         elif move.piece_moved == 'bK':
             self.black_king_location = (move.end_row, move.end_col)
+        
+        if move.is_pawn_promotion:
+            promoted_piece = input('Promote to Q, R, B or N: ')
+            self.board[move.end_row][move.end_col] = move.piece_moved[0] + promoted_piece
+        
+        if move.is_en_passant_move:
+            self.board[move.start_row][move.end_col] = '--'
+
+        if move.piece_moved[1] == 'P' and abs(move.start_row-move.end_row) == 2:
+            self.en_passant_possible = ((move.start_row+move.end_row) // 2, move.start_col)
+        else:
+            self.en_passant_possible = ()
     
     def undo_move(self):
         """
@@ -70,6 +83,13 @@ class GameState:
             self.white_king_location = (last_move.start_row, last_move.start_col)
         elif last_move.piece_moved == 'bK':
             self.black_king_location = (last_move.start_row, last_move.start_col)
+        if last_move.is_en_passant_move:
+            self.board[last_move.end_row][last_move.end_col] = '--'
+            self.board[last_move.start_row][last_move.end_col] = last_move.piece_captured
+            self.en_passant_possible = (last_move.end_row, last_move.end_col)
+        if last_move.piece_moved[1] == 'P' and abs(last_move.start_row-last_move.end_row) == 2:
+            self.en_passant_possible = ()
+        print(f'Undo the move: {last_move.get_chess_notation()}')
     
     def get_valid_moves(self):
         """
@@ -143,13 +163,18 @@ class GameState:
                     if row == 6 and self.board[row-2][col]:
                         moves.append(Move((row, col), (row-2, col), self.board))
             if col - 1 >= 0:
-                if self.board[row-1][col-1][0] == 'b':
-                    if not piece_pinned or pin_direction == (-1, -1):
+                if not piece_pinned or pin_direction == (-1, -1):
+                    if self.board[row-1][col-1][0] == 'b':
                         moves.append(Move((row, col), (row-1, col-1), self.board))
+                    elif (row-1, col-1) == self.en_passant_possible:
+                        moves.append(Move((row, col), (row-1, col-1), self.board, is_en_passant=True))
             if col + 1 <= 7:
-                if self.board[row-1][col+1][0] == 'b':
-                    if not piece_pinned or pin_direction == (-1, 1):
+                if not piece_pinned or pin_direction == (-1, 1):
+                    if self.board[row-1][col+1][0] == 'b':
                         moves.append(Move((row, col), (row-1, col+1), self.board))
+                    elif (row-1, col+1) == self.en_passant_possible:
+                        moves.append(Move((row, col), (row-1, col+1), self.board, is_en_passant=True))
+
         else:
             if self.board[row+1][col] == '--':
                 if not piece_pinned or pin_direction == (1, 0):
@@ -160,10 +185,14 @@ class GameState:
                 if not piece_pinned or pin_direction == (1, -1):
                     if self.board[row+1][col-1][0] == 'w':
                         moves.append(Move((row, col), (row+1, col-1), self.board))
+                    elif (row+1, col-1) == self.en_passant_possible:
+                        moves.append(Move((row, col), (row+1, col-1), self.board, is_en_passant=True))
             if col + 1 <= 7:
                 if not piece_pinned or pin_direction == (1, 1):
                     if self.board[row+1][col+1][0] == 'w':
                         moves.append(Move((row, col), (row+1, col+1), self.board))
+                    elif (row+1, col+1) == self.en_passant_possible:
+                        moves.append(Move((row, col), (row+1, col+1), self.board, is_en_passant=True))
         # Add pawn promotion later
     
     def get_rook_moves(self, row, col, moves):
@@ -382,13 +411,18 @@ class Move:
     }
     cols_to_files = {v: k for k, v in files_to_cols.items()}
 
-    def __init__(self, start_sq, end_sq, board):
+    def __init__(self, start_sq, end_sq, board, is_en_passant=False):
         self.start_row = start_sq[0]
         self.start_col = start_sq[1]
         self.end_row = end_sq[0]
         self.end_col = end_sq[1]
         self.piece_moved = board[self.start_row][self.start_col]
         self.piece_captured = board[self.end_row][self.end_col]
+        self.is_pawn_promotion = ((self.piece_moved == 'wP' and self.end_row == 0) or \
+                (self.piece_moved == 'bP' and self.end_row == 7))
+        self.is_en_passant_move = is_en_passant
+        if self.is_en_passant_move:
+            self.piece_captured = 'wP' if self.piece_moved == 'bP' else 'bP'
         self.move_id = self.start_row * 1000 + self.start_col * 100 + self.end_row * 10 + self.end_col
 
     def __eq__(self, other):
