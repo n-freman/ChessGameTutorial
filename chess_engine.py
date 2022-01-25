@@ -37,8 +37,8 @@ class GameState:
         self.black_king_location = (0, 4)
         self.pins = []
         self.checks = []
-        self.check_mate = False
-        self.stale_mate = False
+        # self.check_mate = False
+        # self.stale_mate = False
         self.en_passant_possible = ()
       
     def make_move(self, move):

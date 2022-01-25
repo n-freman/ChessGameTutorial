@@ -37,7 +37,7 @@ def main():
         HEIGHT-EXTRA_SPACE_ON_SCREEN)
         )
     clock = pg.time.Clock()
-    screen.fill(pg.Color('white'))
+    # screen.fill(pg.Color('white'))
     gs = chess_engine.GameState()
     valid_moves = gs.get_valid_moves()
     # move_mode is a flag variabla for when a move is made.
@@ -63,6 +63,10 @@ def main():
                     player_clicks = []
                 else:
                     sq_selected = (row, col)
+                    # pg.draw.rect(
+                    # screen, pg.Color(255, 240, 200,  50), pg.Rect(col*SQ_SIZE, row*SQ_SIZE, SQ_SIZE, SQ_SIZE)
+                    # )
+                    # pg.display.flip()
                     # We append for both and the second clicks
                     player_clicks.append(sq_selected)
                     # After the second click
@@ -71,10 +75,11 @@ def main():
                             player_clicks[0], 
                             player_clicks[1], 
                             gs.board)
-                        print(move.get_chess_notation())
+                        
                         for i in range(len(valid_moves)):
                             if move == valid_moves[i]:
                                 gs.make_move(valid_moves[i])
+                                print(move.get_chess_notation())
                                 move_made = True
                                 # Resetting user clicks
                                 sq_selected = ()
@@ -91,26 +96,26 @@ def main():
             valid_moves = gs.get_valid_moves()
             move_made = False
 
-        draw_game_state(screen, gs)
+        draw_game_state(screen, gs, sq_selected, valid_moves)
         clock.tick(FPS)
         pg.display.flip()
 
 
-def draw_game_state(screen, gs):
+def draw_game_state(screen, gs, sq_selected, moves):
     """
     Responsible for all the graphics within a current game state.
     """
     # Draw squares on the board
-    draw_board(screen) 
+    draw_board(screen, sq_selected) 
     # Space for adding piece highlighting func
     # Or move suggestion
-    # 
+    draw_movable_squares(screen, sq_selected, moves)
     # 
     # Draw pieces on top the of those squares
     draw_pieces(screen, gs.board)
 
 
-def draw_board(screen):
+def draw_board(screen, sq_selected):
     """
     Draw the squares on the board. The top left square is always light.
     """
@@ -123,6 +128,19 @@ def draw_board(screen):
             pg.draw.rect(
                 screen, color, pg.Rect(column*SQ_SIZE, row*SQ_SIZE, SQ_SIZE, SQ_SIZE)
                 )
+            if sq_selected != ():
+                if (row, column) == sq_selected:
+                    pg.draw.rect(
+                    screen, pg.Color(255, 243, 95), pg.Rect(column*SQ_SIZE, row*SQ_SIZE, SQ_SIZE, SQ_SIZE)
+                    )
+
+
+def draw_movable_squares(screen, sq_selected, moves):
+    for move in moves:
+                if sq_selected != ():
+                    if ((move.start_row, move.start_col) == sq_selected):
+                        pg.draw.circle(screen, pg.Color('#666564'), (move.end_col*SQ_SIZE+SQ_SIZE/2, move.end_row*SQ_SIZE+SQ_SIZE/2), 10, 10)
+            
 
 
 def draw_pieces(screen, board):
