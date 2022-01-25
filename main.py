@@ -9,6 +9,7 @@ import chess_engine
 WIDTH = HEIGHT = 650
 DIMENSION = 8
 SQ_SIZE = HEIGHT // DIMENSION
+EXTRA_SPACE_ON_SCREEN = WIDTH - SQ_SIZE * DIMENSION
 FPS = 15
 square_piece_size_diff = 8
 IMAGES = {}
@@ -31,7 +32,10 @@ def main():
     This main driver for our code. This will handle user input and updating the graphics
     """
     pg.init()
-    screen = pg.display.set_mode((WIDTH-2, HEIGHT-2))
+    screen = pg.display.set_mode(
+        (WIDTH-EXTRA_SPACE_ON_SCREEN, 
+        HEIGHT-EXTRA_SPACE_ON_SCREEN)
+        )
     clock = pg.time.Clock()
     screen.fill(pg.Color('white'))
     gs = chess_engine.GameState()
