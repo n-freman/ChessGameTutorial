@@ -1,7 +1,3 @@
-from tabnanny import check
-from turtle import st
-
-
 class GameState:
     """
     This class is responsible for storing all the information about the current state of a chess game. It will also be
@@ -155,45 +151,32 @@ class GameState:
                 pin_direction = (self.pins[i][2], self.pins[i][3])
                 self.pins.remove(self.pins[i])
                 break
-
+        
         if self.white_to_move:
-            if self.board[row-1][col] == '--':
-                if not piece_pinned or pin_direction == (-1, 0):
-                    moves.append(Move((row, col), (row-1, col), self.board))
-                    if row == 6 and self.board[row-2][col]:
-                        moves.append(Move((row, col), (row-2, col), self.board))
-            if col - 1 >= 0:
-                if not piece_pinned or pin_direction == (-1, -1):
-                    if self.board[row-1][col-1][0] == 'b':
-                        moves.append(Move((row, col), (row-1, col-1), self.board))
-                    elif (row-1, col-1) == self.en_passant_possible:
-                        moves.append(Move((row, col), (row-1, col-1), self.board, is_en_passant=True))
-            if col + 1 <= 7:
-                if not piece_pinned or pin_direction == (-1, 1):
-                    if self.board[row-1][col+1][0] == 'b':
-                        moves.append(Move((row, col), (row-1, col+1), self.board))
-                    elif (row-1, col+1) == self.en_passant_possible:
-                        moves.append(Move((row, col), (row-1, col+1), self.board, is_en_passant=True))
-
+            move_amount = -1
+            start_row = 6
+            back_row = 0
+            enemy_color = 'b'
         else:
-            if self.board[row+1][col] == '--':
-                if not piece_pinned or pin_direction == (1, 0):
-                    moves.append(Move((row, col), (row+1, col), self.board))
-                    if row == 1 and self.board[row+2][col] == '--':
-                        moves.append(Move((row, col), (row+2, col), self.board))
-            if col - 1 >= 0:
-                if not piece_pinned or pin_direction == (1, -1):
-                    if self.board[row+1][col-1][0] == 'w':
-                        moves.append(Move((row, col), (row+1, col-1), self.board))
-                    elif (row+1, col-1) == self.en_passant_possible:
-                        moves.append(Move((row, col), (row+1, col-1), self.board, is_en_passant=True))
-            if col + 1 <= 7:
-                if not piece_pinned or pin_direction == (1, 1):
-                    if self.board[row+1][col+1][0] == 'w':
-                        moves.append(Move((row, col), (row+1, col+1), self.board))
-                    elif (row+1, col+1) == self.en_passant_possible:
-                        moves.append(Move((row, col), (row+1, col+1), self.board, is_en_passant=True))
-        # Add pawn promotion later
+            move_amount = 1
+            start_row = 1
+            back_row = 7
+            enemy_color = 'w'
+        capture_directions = [-1, 1]
+
+
+        if self.board[row+move_amount][col] == '--':
+            if not piece_pinned or pin_direction == (move_amount, 0):
+                moves.append(Move((row, col), (row+move_amount, col), self.board))
+                if row == start_row and self.board[row+2*move_amount][col]:
+                    moves.append(Move((row, col), (row+2*move_amount, col), self.board))
+        for d in capture_directions:
+            if 0 <= col + d < 8:
+                if not piece_pinned or pin_direction == (move_amount, d):
+                    if self.board[row+move_amount][col+d][0] == enemy_color:
+                        moves.append(Move((row, col), (row+move_amount, col+d), self.board))
+                    elif (row+move_amount, col+d) == self.en_passant_possible:
+                        moves.append(Move((row, col), (row+move_amount, col+d), self.board, is_en_passant=True))
     
     def get_rook_moves(self, row, col, moves):
         """
@@ -272,7 +255,7 @@ class GameState:
             for i in range(1, 8):
                 end_row = row + d[0] * i
                 end_col = col + d[1] * i
-                if 0 <= end_row < 8 and 0 <= end_col < 8:
+                if 0 <= end_row <= 7 and 0 <= end_col <= 7:
                     if not piece_pinned or pin_direction == d or pin_direction == (-d[0], -d[1]):
                         end_piece = self.board[end_row][end_col]
                         if end_piece == '--':
@@ -336,7 +319,7 @@ class GameState:
             ally_color = 'b'
             start_row = self.black_king_location[0]
             start_col = self.black_king_location[1]
-        directions = ((1, 0), (1, 1), (1, -1), (-1, 0), (-1, 1), (-1, -1), (0, 1), (0, -1))
+        directions = ((-1, 0), (0, -1), (1, 0), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1))
         for j in range(len(directions)):
             d = directions[j]
             possible_pin = ()
@@ -345,7 +328,7 @@ class GameState:
                 end_col = start_col + d[1] * i
                 if 0 <= end_row < 8 and 0 <= end_col < 8:
                     end_piece = self.board[end_row][end_col]
-                    if end_piece[0] == ally_color and end_piece[1] != 'K':
+                    if end_piece[0] == ally_color:
                         if possible_pin == ():
                             possible_pin = (end_row, end_col, d[0], d[1])
                         else:
