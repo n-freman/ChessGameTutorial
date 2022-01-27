@@ -89,6 +89,9 @@ def main():
                 if event.key == pg.K_c:
                     gs.undo_move()
                     move_made = True
+                elif event.key == pg.K_r:
+                    gs = chess_engine.GameState()
+                    print('Game was reset')
 
         if move_made:
             valid_moves = gs.get_valid_moves()
@@ -114,10 +117,8 @@ def draw_game_state(screen, gs, sq_selected, moves):
     """
     Responsible for all the graphics within a current game state.
     """
-    # Draw squares on the board
+    # Draw squares of the board
     draw_board(screen, sq_selected) 
-    # Space for adding piece highlighting func
-    # Or move suggestion
     highlight_movable_squares(screen, sq_selected, moves)
     # Draw pieces on top the of those squares
     draw_pieces(screen, gs.board)
@@ -139,7 +140,8 @@ def draw_board(screen, sq_selected):
             if sq_selected != ():
                 if (row, column) == sq_selected:
                     pg.draw.rect(
-                    screen, pg.Color(255, 243, 95), pg.Rect(column*SQ_SIZE, row*SQ_SIZE, SQ_SIZE, SQ_SIZE)
+                    screen, pg.Color(255, 243, 95), pg.Rect(column*SQ_SIZE, 
+                        row*SQ_SIZE, SQ_SIZE, SQ_SIZE)
                     )
 
 
@@ -147,7 +149,10 @@ def highlight_movable_squares(screen, sq_selected, moves):
     for move in moves:
                 if sq_selected != ():
                     if ((move.start_row, move.start_col) == sq_selected):
-                        pg.draw.circle(screen, pg.Color('#666564'), (move.end_col*SQ_SIZE+SQ_SIZE/2, move.end_row*SQ_SIZE+SQ_SIZE/2), 10, 10)
+                        pg.draw.circle(
+                            screen, pg.Color('#666564'), 
+                            (move.end_col*SQ_SIZE+SQ_SIZE/2, 
+                                move.end_row*SQ_SIZE+SQ_SIZE/2), 10, 10)
             
 
 
@@ -171,14 +176,14 @@ def draw_pieces(screen, board):
 
 
 def draw_text(screen, text):
-    font = pg.font.SysFont('Helvetica', 32, True, False)
-    text_object = font.render(text, 0, pg.Color('#FFC900'))
+    font = pg.font.SysFont('Broadway', 34, True, False)
+    text_object = font.render(text, 0, pg.Color('#E5D549'))
     text_location = pg.Rect(
         0, 0, WIDTH, HEIGHT).move(
             WIDTH/2 - text_object.get_width()/2, 
             HEIGHT/2 - text_object.get_height()/2)
     screen.blit(text_object, text_location)
-    text_object = font.render(text, 0, pg.Color('#FF1700'))
+    text_object = font.render(text, 0, pg.Color('#03256C'))
     screen.blit(text_object, text_location.move(4, 4))
 
 
