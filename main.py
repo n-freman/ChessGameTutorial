@@ -36,6 +36,9 @@ def main():
         (WIDTH-EXTRA_SPACE_ON_SCREEN, 
         HEIGHT-EXTRA_SPACE_ON_SCREEN)
         )
+    logo = pg.image.load('Assets/chess-icon.jpg')
+    pg.display.set_icon(logo)
+    pg.display.set_caption('Nazar\'s chess game')
     clock = pg.time.Clock()
     gs = chess_engine.GameState()
     valid_moves = gs.get_valid_moves()
@@ -92,6 +95,17 @@ def main():
             move_made = False
 
         draw_game_state(screen, gs, sq_selected, valid_moves)
+
+        if gs.check_mate:
+            game_over = True
+            if gs.white_to_move:
+                draw_text(screen, 'Black win by checkmate')
+            else:
+                draw_text(screen, 'White win by checkmate')
+        elif gs.stale_mate:
+            game_over = True
+            draw_text(screen, 'Stalemate')
+
         clock.tick(FPS)
         pg.display.flip()
 
@@ -104,7 +118,7 @@ def draw_game_state(screen, gs, sq_selected, moves):
     draw_board(screen, sq_selected) 
     # Space for adding piece highlighting func
     # Or move suggestion
-    draw_movable_squares(screen, sq_selected, moves)
+    highlight_movable_squares(screen, sq_selected, moves)
     # Draw pieces on top the of those squares
     draw_pieces(screen, gs.board)
 
@@ -129,7 +143,7 @@ def draw_board(screen, sq_selected):
                     )
 
 
-def draw_movable_squares(screen, sq_selected, moves):
+def highlight_movable_squares(screen, sq_selected, moves):
     for move in moves:
                 if sq_selected != ():
                     if ((move.start_row, move.start_col) == sq_selected):
@@ -154,6 +168,22 @@ def draw_pieces(screen, board):
                         SQ_SIZE, 
                         SQ_SIZE)
                     )
+
+
+def draw_text(screen, text):
+    font = pg.font.SysFont('Helvetica', 32, True, False)
+    text_object = font.render(text, 0, pg.Color('#FFC900'))
+    text_location = pg.Rect(
+        0, 0, WIDTH, HEIGHT).move(
+            WIDTH/2 - text_object.get_width()/2, 
+            HEIGHT/2 - text_object.get_height()/2)
+    screen.blit(text_object, text_location)
+    text_object = font.render(text, 0, pg.Color('#FF1700'))
+    screen.blit(text_object, text_location.move(4, 4))
+
+
+def animate_move(move, screen, board):
+    pass
 
 
 if __name__ == "__main__":

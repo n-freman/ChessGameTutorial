@@ -33,6 +33,8 @@ class GameState:
         self.black_king_location = (0, 4)
         self.pins = []
         self.checks = []
+        self.check_mate = False
+        self.stale_mate = False
         self.en_passant_possible = ()
         self.current_castling_rights = CastleRights(True, True, True, True)
         self.castle_rights_log = [CastleRights(self.current_castling_rights.wks, self.current_castling_rights.bks,
@@ -90,18 +92,22 @@ class GameState:
         self.board[last_move.end_row][last_move.end_col] = last_move.piece_captured
         # Swap players back
         self.white_to_move = not self.white_to_move
+        # Set back kings lovation
         if last_move.piece_moved == 'wk':
             self.white_king_location = (last_move.start_row, last_move.start_col)
         elif last_move.piece_moved == 'bK':
             self.black_king_location = (last_move.start_row, last_move.start_col)
+        # Make en-passant possible again
         if last_move.is_en_passant_move:
             self.board[last_move.end_row][last_move.end_col] = '--'
             self.board[last_move.start_row][last_move.end_col] = last_move.piece_captured
             self.en_passant_possible = (last_move.end_row, last_move.end_col)
         if last_move.piece_moved[1] == 'P' and abs(last_move.start_row-last_move.end_row) == 2:
             self.en_passant_possible = ()
+        # Set back castle rights
         self.castle_rights_log.pop()
         self.current_castling_rights = self.castle_rights_log[-1]
+        # Reset the rook if last move was castling
         if last_move.is_castle_move:
             if last_move.end_col - last_move.start_col == 2:
                 self.board[last_move.end_row][last_move.end_col+1] = self.board[last_move.end_row][last_move.end_col-1]
@@ -142,7 +148,7 @@ class GameState:
             king_col = self.white_king_location[1]
         else:
             king_row = self.black_king_location[0]
-            king_row = self.black_king_location[1]
+            king_col = self.black_king_location[1]
         if self.in_check:
             if len(self.checks) == 1:
                 moves = self.get_all_possible_moves()
@@ -171,6 +177,12 @@ class GameState:
                 self.get_castle_moves(self.white_king_location[0], self.white_king_location[1], moves)
             else:
                 self.get_castle_moves(self.black_king_location[0], self.black_king_location[1], moves)
+
+        if len(moves) == 0:
+            if self.in_check:
+                self.check_mate = True
+            else:
+                self.stale_mate = True
         
         return moves
 
@@ -224,12 +236,10 @@ class GameState:
         if self.white_to_move:
             move_amount = -1
             start_row = 6
-            back_row = 0
             enemy_color = 'b'
         else:
             move_amount = 1
             start_row = 1
-            back_row = 7
             enemy_color = 'w'
         capture_directions = [-1, 1]
 
@@ -237,7 +247,7 @@ class GameState:
         if self.board[row+move_amount][col] == '--':
             if not piece_pinned or pin_direction == (move_amount, 0):
                 moves.append(Move((row, col), (row+move_amount, col), self.board))
-                if row == start_row and self.board[row+2*move_amount][col]:
+                if row == start_row and self.board[row+2*move_amount][col] == '--':
                     moves.append(Move((row, col), (row+2*move_amount, col), self.board))
         for d in capture_directions:
             if 0 <= col + d < 8:
@@ -515,6 +525,9 @@ class Move:
         if isinstance(other, Move):
             return self.move_id == other.move_id
         return False
+    
+    def __repr__(self):
+        return f'Move(start_pos: {self.start_row, self.start_col})\tend_pos: {self.end_row, self.end_col}\n'
     
     def get_chess_notation(self):
         # TODO make a real chess notation

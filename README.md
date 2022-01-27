@@ -1,15 +1,16 @@
 # Chess Making video tutorial completion   
 I strated this tutorial on 21.01.2022.<br>
 Hope to finish it in two weeks.<br>
-22.01.22 12:28 Finished 1/16 tutorial.<br>
-22.01.22 13:42 Finished 2/16 tutorial.<br>
-23.01.22 09:44 Finished 3/16 tutorial.<br>
-23.01.22 18:35 Finished 4/16 tutorial.<br>
-24.01.22 11:52 Finished 5/16 tutorial.<br>
-24.01.22 14:22 Finished 6/16 tutorial.<br>
-25.01.22 10:18 Finished 7/16 tutorial.<br>
-25.01.22 12:00 Finished 8/16 tutorial.<br>
-26.01.22 14:45 Finished 9/16 tutorial.
+22.01.22 12:28 Finished 01/16 tutorial.<br>
+22.01.22 13:42 Finished 02/16 tutorial.<br>
+23.01.22 09:44 Finished 03/16 tutorial.<br>
+23.01.22 18:35 Finished 04/16 tutorial.<br>
+24.01.22 11:52 Finished 05/16 tutorial.<br>
+24.01.22 14:22 Finished 06/16 tutorial.<br>
+25.01.22 10:18 Finished 07/16 tutorial.<br>
+25.01.22 12:00 Finished 08/16 tutorial.<br>
+26.01.22 14:45 Finished 09/16 tutorial.<br>
+27.01.22 10:50 Finished 10/16 tutorial.
 
 ---
 
