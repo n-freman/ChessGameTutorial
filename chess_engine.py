@@ -37,8 +37,6 @@ class GameState:
         self.black_king_location = (0, 4)
         self.pins = []
         self.checks = []
-        # self.check_mate = False
-        # self.stale_mate = False
         self.en_passant_possible = ()
       
     def make_move(self, move):
@@ -193,7 +191,6 @@ class GameState:
                         moves.append(Move((row, col), (row+1, col+1), self.board))
                     elif (row+1, col+1) == self.en_passant_possible:
                         moves.append(Move((row, col), (row+1, col+1), self.board, is_en_passant=True))
-        # Add pawn promotion later
     
     def get_rook_moves(self, row, col, moves):
         """
@@ -435,6 +432,10 @@ class Move:
     
     def get_chess_notation(self):
         # TODO make a real chess notation
+        # msg = self.piece_moved[1] if self.piece_moved[1] != 'P' else self.gat_rank_file(self.start_row, self.start_col) \
+        #     if self.piece_captured != '--' else self.gat_rank_file(self.start_row, self.start_col)
+        # msg += 'x' if self.piece_captured != '--' else ''
+        # msg += self.gat_rank_file(self.end_row, self.end_col)
         return self.gat_rank_file(self.start_row, self.start_col) + self.gat_rank_file(self.end_row, self.end_col)
     
     def gat_rank_file(self, row, col):

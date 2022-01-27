@@ -37,7 +37,6 @@ def main():
         HEIGHT-EXTRA_SPACE_ON_SCREEN)
         )
     clock = pg.time.Clock()
-    # screen.fill(pg.Color('white'))
     gs = chess_engine.GameState()
     valid_moves = gs.get_valid_moves()
     # move_mode is a flag variabla for when a move is made.
@@ -63,11 +62,7 @@ def main():
                     player_clicks = []
                 else:
                     sq_selected = (row, col)
-                    # pg.draw.rect(
-                    # screen, pg.Color(255, 240, 200,  50), pg.Rect(col*SQ_SIZE, row*SQ_SIZE, SQ_SIZE, SQ_SIZE)
-                    # )
-                    # pg.display.flip()
-                    # We append for both and the second clicks
+                    # We append for both first and the second clicks
                     player_clicks.append(sq_selected)
                     # After the second click
                     if len(player_clicks) == 2:
@@ -110,7 +105,6 @@ def draw_game_state(screen, gs, sq_selected, moves):
     # Space for adding piece highlighting func
     # Or move suggestion
     draw_movable_squares(screen, sq_selected, moves)
-    # 
     # Draw pieces on top the of those squares
     draw_pieces(screen, gs.board)
 

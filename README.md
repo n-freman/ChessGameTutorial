@@ -19,7 +19,8 @@ Added some changes to the variable names, because author used not pythonic namin
 (he actually says that he is the JAVA guy).<br>
 Also added my own pieces and colors for game board.<br>
 Added functionality for making pieces smaller than the squares.<br>
-Rewrote some functions ('undo_move', get_piece_move for each piece) on my own way.
+Rewrote some functions ('undo_move', get_piece_move for each piece) on my own way.<br>
+Created selected and movable square highlighting function.s
 
 ---
 
