@@ -11,7 +11,7 @@ DIMENSION = 8
 SQ_SIZE = HEIGHT // DIMENSION
 EXTRA_SPACE_ON_SCREEN = WIDTH - SQ_SIZE * DIMENSION
 FPS = 15
-square_piece_size_diff = 8
+square_piece_size_diff = 0
 IMAGES = {}
 
 
@@ -113,7 +113,7 @@ def draw_board(screen, sq_selected):
     """
     Draw the squares on the board. The top left square is always light.
     """
-    colors = [pg.Color(238, 238, 213), pg.Color(125, 148, 93)]
+    colors = [pg.Color('#fafafa'), pg.Color('#868786')]
     for row in range(DIMENSION):
         for column in range(DIMENSION):
             # ROW + COLUMN of light squares is always even
