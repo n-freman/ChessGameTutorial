@@ -91,7 +91,8 @@ def main():
                     move_made = True
                 elif event.key == pg.K_r:
                     gs = chess_engine.GameState()
-                    print('Game was reset')
+                    valid_moves = gs.get_valid_moves()
+                    print('Game has been reset.')
 
         if move_made:
             valid_moves = gs.get_valid_moves()
